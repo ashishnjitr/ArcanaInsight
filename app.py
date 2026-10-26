@@ -2,159 +2,278 @@ import os
 import random
 import streamlit as st
 
-# Configure page settings
+# Configure wide layout and page attributes
 st.set_page_config(
-    page_title="Arcana Insight | Authentic Tarot Engine",
-    page_icon="🔮",
+    page_title="Arcana Insight | Mystical Tarot",
+    page_icon="✨",
     layout="wide",
-    initial_sidebar_state="expanded",
+    initial_sidebar_state="collapsed",
 )
 
-# Custom Styling for Celestial Dark Mode
+# Deep cosmic styling mirroring the first layout
 st.markdown(
     """
     <style>
-    .main {
-        background-color: #0d0f18;
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+    .stApp {
+        background: radial-gradient(circle at 50% 15%, #18112d 0%, #0a0614 70%, #040208 100%);
         color: #e2e8f0;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
-    .stButton>button {
-        background: linear-gradient(135deg, #6366f1, #a855f7);
-        color: white;
-        border: none;
-        padding: 0.65rem 1.8rem;
-        font-weight: 600;
-        border-radius: 8px;
-        transition: all 0.3s ease;
+
+    /* Cosmic Header */
+    .hero-container {
+        text-align: center;
+        padding: 2.2rem 1rem 1.2rem 1rem;
+        max-width: 900px;
+        margin: 0 auto;
     }
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
-    }
-    .tarot-card {
-        background: #161a29;
-        border: 1px solid #2d3748;
-        border-radius: 12px;
-        padding: 1.2rem;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        margin-bottom: 1rem;
-        min-height: 260px;
-    }
-    .card-title {
-        color: #e9d5ff;
-        font-size: 1.15rem;
-        font-weight: 700;
-        margin-bottom: 0.3rem;
-    }
-    .card-orientation {
-        font-size: 0.85rem;
+    .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.95rem;
+        background: rgba(147, 51, 234, 0.14);
+        border: 1px solid rgba(192, 132, 252, 0.3);
+        border-radius: 9999px;
+        font-size: 0.76rem;
         font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.14em;
+        color: #d8b4fe;
+        margin-bottom: 0.9rem;
     }
-    .orientation-upright {
-        color: #34d399;
+    .hero-title {
+        font-family: 'Cinzel', serif;
+        font-size: 2.7rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        background: linear-gradient(135deg, #ffffff 20%, #d8b4fe 60%, #c084fc 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.4rem;
     }
-    .orientation-reversed {
-        color: #f87171;
+    .hero-subtitle {
+        color: #94a3b8;
+        font-size: 1rem;
+        max-width: 640px;
+        margin: 0 auto 1.5rem auto;
+        line-height: 1.5;
     }
-    .element-tag {
+
+    /* Query & Action Bar */
+    .input-bar-wrap {
+        background: rgba(18, 13, 33, 0.7);
+        border: 1px solid rgba(168, 85, 247, 0.25);
+        border-radius: 16px;
+        padding: 1.4rem;
+        backdrop-filter: blur(12px);
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Primary Tarot Cards Grid */
+    .card-slot-wrap {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    .card-slot-tag {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #c084fc;
+        background: rgba(147, 51, 234, 0.15);
+        border: 1px solid rgba(168, 85, 247, 0.3);
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        margin-bottom: 0.6rem;
+    }
+    .mystic-card {
+        width: 100%;
+        max-width: 250px;
+        height: 380px;
+        background: linear-gradient(160deg, #1f1538 0%, #110b20 60%, #0a0614 100%);
+        border: 1.5px solid rgba(216, 180, 254, 0.35);
+        border-radius: 16px;
+        padding: 1.1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), inset 0 0 18px rgba(168, 85, 247, 0.12);
+        transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    .mystic-card:hover {
+        transform: translateY(-5px);
+        border-color: rgba(216, 180, 254, 0.7);
+        box-shadow: 0 18px 40px rgba(147, 51, 234, 0.28);
+    }
+    .card-glyph-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: radial-gradient(circle, rgba(168, 85, 247, 0.12) 0%, transparent 70%);
+        border: 1px dashed rgba(168, 85, 247, 0.25);
+        border-radius: 12px;
+        margin: 0.6rem 0;
+    }
+    .card-symbol {
+        font-size: 3rem;
+        filter: drop-shadow(0 0 10px rgba(216, 180, 254, 0.5));
+    }
+    .card-name-title {
+        font-family: 'Cinzel', serif;
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: #f8fafc;
+        text-align: center;
+        margin-top: 0.3rem;
+    }
+    .status-pill {
         display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
         padding: 0.15rem 0.55rem;
         border-radius: 4px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        margin-top: 0.4rem;
-        background-color: #242b42;
-        color: #93c5fd;
+        text-transform: uppercase;
     }
-    .reading-summary-box {
-        background: rgba(30, 27, 75, 0.45);
-        border: 1px solid #4338ca;
-        border-radius: 12px;
-        padding: 1.5rem;
+    .status-upright {
+        background: rgba(52, 211, 153, 0.18);
+        color: #6ee7b7;
+        border: 1px solid rgba(52, 211, 153, 0.4);
+    }
+    .status-reversed {
+        background: rgba(248, 113, 113, 0.18);
+        color: #fca5a5;
+        border: 1px solid rgba(248, 113, 113, 0.4);
+    }
+
+    /* Narrative Output Box */
+    .oracle-glass-box {
+        background: rgba(18, 13, 33, 0.75);
+        border: 1px solid rgba(168, 85, 247, 0.35);
+        border-radius: 18px;
+        padding: 2.2rem;
         margin-top: 1.5rem;
+        backdrop-filter: blur(14px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+    }
+    .oracle-glass-box h3 {
+        font-family: 'Cinzel', serif;
+        font-size: 1.6rem;
+        color: #e9d5ff;
+        margin-bottom: 0.9rem;
+    }
+    .oracle-glass-box h4 {
+        font-family: 'Cinzel', serif;
+        font-size: 1.15rem;
+        color: #c084fc;
+        margin-top: 1.3rem;
+        margin-bottom: 0.5rem;
+    }
+    .oracle-glass-box p, .oracle-glass-box li {
+        color: #cbd5e1;
+        line-height: 1.7;
+        font-size: 0.96rem;
+    }
+
+    /* Elemental Breakdown Chips */
+    .element-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(30, 24, 52, 0.6);
+        border: 1px solid rgba(147, 51, 234, 0.25);
+        border-radius: 8px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        color: #e2e8f0;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
     }
     </style>
     """,
     unsafe_allow_html=True,
 )
 
-# Deck Archetypes & Elemental Attributes
+# Comprehensive Archetypes Database with symbols and suits
 TAROT_DECK = [
-    # Major Arcana
-    {"name": "The Fool", "arcana": "Major", "element": "Air", "keywords": ["New beginnings", "Spontaneity", "Leap of faith", "Infinite potential"], "reversed_keywords": ["Recklessness", "Hesitation", "Naivety", "Poor timing"]},
-    {"name": "The Magician", "arcana": "Major", "element": "Air", "keywords": ["Resourcefulness", "Manifestation", "Willpower", "Focused intention"], "reversed_keywords": ["Manipulation", "Untapped talents", "Scattered focus", "Trickery"]},
-    {"name": "The High Priestess", "arcana": "Major", "element": "Water", "keywords": ["Intuition", "Unconscious realm", "Sacred mystery", "Inner knowledge"], "reversed_keywords": ["Ignored gut feelings", "Surface secrets", "Disconnection", "Superficiality"]},
-    {"name": "The Empress", "arcana": "Major", "element": "Earth", "keywords": ["Abundance", "Nurturing", "Sensory creation", "Organic growth"], "reversed_keywords": ["Creative burnout", "Over-dependence", "Smothering", "Neglect"]},
-    {"name": "The Emperor", "arcana": "Major", "element": "Fire", "keywords": ["Structure", "Discipline", "Sound authority", "Strategic foundation"], "reversed_keywords": ["Rigidity", "Authoritarian control", "Disorganization", "Chaos"]},
-    {"name": "The Hierophant", "arcana": "Major", "element": "Earth", "keywords": ["Tradition", "Spiritual lineage", "Shared values", "Mentorship"], "reversed_keywords": ["Challenging dogma", "Dogmatic restriction", "Unconventional path", "Rebellion"]},
-    {"name": "The Lovers", "arcana": "Major", "element": "Air", "keywords": ["Sacred choice", "Alignment of values", "Harmony", "Deep duality"], "reversed_keywords": ["Value conflict", "Internal misalignment", "Disharmony", "Avoided decisions"]},
-    {"name": "The Chariot", "arcana": "Major", "element": "Water", "keywords": ["Determination", "Directed momentum", "Overcoming tension", "Mastery"], "reversed_keywords": ["Lack of direction", "Powerlessness", "Aggression", "Scattered force"]},
-    {"name": "Strength", "arcana": "Major", "element": "Fire", "keywords": ["Compassion", "Quiet resilience", "Emotional fortitude", "Patience"], "reversed_keywords": ["Self-doubt", "Exhaustion", "Impulsiveness", "Raw vulnerability"]},
-    {"name": "The Hermit", "arcana": "Major", "element": "Earth", "keywords": ["Soul searching", "Introspection", "Solitary insight", "Inner truth"], "reversed_keywords": ["Isolation", "Loneliness", "Rejecting wisdom", "Withdrawal"]},
-    {"name": "Wheel of Fortune", "arcana": "Major", "element": "Fire", "keywords": ["Karmic cycles", "Destiny shifts", "Inevitable change", "Turning points"], "reversed_keywords": ["Resisting flow", "Repeated patterns", "Temporary bad luck", "Control illusions"]},
-    {"name": "Justice", "arcana": "Major", "element": "Air", "keywords": ["Cause and effect", "Objective clarity", "Truth", "Radical accountability"], "reversed_keywords": ["Bias", "Unfair scrutiny", "Dodging consequences", "Unresolved imbalance"]},
-    {"name": "The Hanged Man", "arcana": "Major", "element": "Water", "keywords": ["Paradoxical surrender", "New perspective", "Voluntary pause", "Release"], "reversed_keywords": ["Stagnation", "Futile struggle", "Martyrdom", "Delaying the inevitable"]},
-    {"name": "Death", "arcana": "Major", "element": "Water", "keywords": ["Profound metamorphosis", "Ending cycles", "Clearing ground", "Rebirth"], "reversed_keywords": ["Fear of shedding old skin", "Clinging to remnants", "Prolonged goodbyes", "Resisting transformation"]},
-    {"name": "Temperance", "arcana": "Major", "element": "Fire", "keywords": ["Alchemy", "Synthesis", "Patience", "Finding the middle current"], "reversed_keywords": ["Extremes", "Internal friction", "Impatience", "Overindulgence"]},
-    {"name": "The Devil", "arcana": "Major", "element": "Earth", "keywords": ["Unconscious attachments", "Shadow patterns", "Temptation", "Self-imposed limits"], "reversed_keywords": ["Breaking free", "Reclaiming autonomy", "Facing down vices", "Shedding illusion"]},
-    {"name": "The Tower", "arcana": "Major", "element": "Fire", "keywords": ["Structural collapse", "Liberating breakthrough", "Shattered assumptions", "Raw truth"], "reversed_keywords": ["Averting disaster narrowly", "Prolonging brittle structures", "Internal upheaval", "Delayed shakeup"]},
-    {"name": "The Star", "arcana": "Major", "element": "Air", "keywords": ["Renewed hope", "Authentic inspiration", "Spiritual balm", "Clarity"], "reversed_keywords": ["Temporary discouragement", "Bleak outlook", "Disconnected faith", " cynicism"]},
-    {"name": "The Moon", "arcana": "Major", "element": "Water", "keywords": ["Illusion", "Vivid subconscious", "Anxiety", "Navigating foggy waters"], "reversed_keywords": ["Lifting fog", "Exposed deceits", "Calming the psyche", "Emerging clarity"]},
-    {"name": "The Sun", "arcana": "Major", "element": "Fire", "keywords": ["Vitality", "Total transparency", "Radiant joy", "Unambiguous success"], "reversed_keywords": ["Clouded optimism", "Delayed realization", "Temporary burnout", "Muffled warmth"]},
-    {"name": "Judgement", "arcana": "Major", "element": "Fire", "keywords": ["Awakening call", "Higher accountability", "Self-reckoning", "Absolution"], "reversed_keywords": ["Harsh self-criticism", "Ignoring the call", "Paralyzing guilt", "Lingering doubts"]},
-    {"name": "The World", "arcana": "Major", "element": "Earth", "keywords": ["Wholeness", "Integration", "Culmination", "Arriving at the threshold"], "reversed_keywords": ["Loose ends", "Unfinished chapter", "Delayed closure", "Premature celebration"]},
+    {"name": "The Fool", "arcana": "Major", "element": "Air", "symbol": "🌌", "keywords": ["New Beginnings", "Innocence", "Leap of Faith", "Infinite Potential"], "reversed_keywords": ["Recklessness", "Hesitation", "Naivety", "Blind Risk"]},
+    {"name": "The Magician", "arcana": "Major", "element": "Air", "symbol": "⚡", "keywords": ["Manifestation", "Willpower", "Resourcefulness", "Directed Focus"], "reversed_keywords": ["Trickery", "Scattered Focus", "Untapped Power", "Deception"]},
+    {"name": "The High Priestess", "arcana": "Major", "element": "Water", "symbol": "🌙", "keywords": ["Intuition", "Sacred Mystery", "Inner Voice", "Subconscious"], "reversed_keywords": ["Suppressed Intuition", "Secrets", "Surface Thinking", "Superficiality"]},
+    {"name": "The Empress", "arcana": "Major", "element": "Earth", "symbol": "🌿", "keywords": ["Abundance", "Sensory Creation", "Nurturing", "Fertile Ground"], "reversed_keywords": ["Creative Burnout", "Over-dependence", "Smothering", "Neglect"]},
+    {"name": "The Emperor", "arcana": "Major", "element": "Fire", "symbol": "👑", "keywords": ["Structure", "Stability", "Clear Authority", "Strategic Order"], "reversed_keywords": ["Rigidity", "Domination", "Chaos", "Inflexibility"]},
+    {"name": "The Hierophant", "arcana": "Major", "element": "Earth", "symbol": "🗝️", "keywords": ["Spiritual Lineage", "Tradition", "Shared Values", "Mentorship"], "reversed_keywords": ["Challenging Dogma", "Unconventional Way", "Personal Truth", "Rebellion"]},
+    {"name": "The Lovers", "arcana": "Major", "element": "Air", "symbol": "💞", "keywords": ["Sacred Alignment", "Dual Harmony", "Core Values", "Conscious Choice"], "reversed_keywords": ["Value Conflict", "Misalignment", "Avoided Decisions", "Internal Friction"]},
+    {"name": "The Chariot", "arcana": "Major", "element": "Water", "symbol": "🛡️", "keywords": ["Determination", "Directed Momentum", "Inner Triumph", "Willpower"], "reversed_keywords": ["Lack of Direction", "Powerlessness", "Scattered Energy", "Obstacles"]},
+    {"name": "Strength", "arcana": "Major", "element": "Fire", "symbol": "🦁", "keywords": ["Compassion", "Quiet Resilience", "Emotional Fortitude", "Gentle Mastery"], "reversed_keywords": ["Self-doubt", "Exhaustion", "Impulsiveness", "Raw Vulnerability"]},
+    {"name": "The Hermit", "arcana": "Major", "element": "Earth", "symbol": "🏮", "keywords": ["Soul Searching", "Introspection", "Solitary Wisdom", "Inner Guidance"], "reversed_keywords": ["Isolation", "Withdrawal", "Ignoring Truth", "Loneliness"]},
+    {"name": "Wheel of Fortune", "arcana": "Major", "element": "Fire", "symbol": "🎡", "keywords": ["Karmic Shifts", "Inevitable Cycles", "Destiny", "Turning Points"], "reversed_keywords": ["Resisting Flow", "Repeated Mistakes", "Illusions of Control", "Stagnation"]},
+    {"name": "Justice", "arcana": "Major", "element": "Air", "symbol": "⚖️", "keywords": ["Cause & Effect", "Clarity", "Truth", "Radical Accountability"], "reversed_keywords": ["Dishonesty", "Unfair Scrutiny", "Dodging Truth", "Unresolved Bias"]},
+    {"name": "The Hanged Man", "arcana": "Major", "element": "Water", "symbol": "⏳", "keywords": ["Paradoxical Pause", "New Perspective", "Surrender", "Letting Go"], "reversed_keywords": ["Futile Struggle", "Stagnation", "Martyrdom", "Delaying Release"]},
+    {"name": "Death", "arcana": "Major", "element": "Water", "symbol": "🦋", "keywords": ["Profound Metamorphosis", "Ending Cycles", "Pruning", "Rebirth"], "reversed_keywords": ["Clinging to Remains", "Fear of Rebirth", "Prolonged Endings", "Resistance"]},
+    {"name": "Temperance", "arcana": "Major", "element": "Fire", "symbol": "⚗️", "keywords": ["Alchemy", "Synthesis", "Patience", "Finding Equanimity"], "reversed_keywords": ["Imbalance", "Internal Friction", "Impatience", "Overindulgence"]},
+    {"name": "The Devil", "arcana": "Major", "element": "Earth", "symbol": "⛓️", "keywords": ["Shadow Patterns", "Unconscious Attachments", "Illusory Chains", "Temptation"], "reversed_keywords": ["Reclaiming Autonomy", "Breaking Free", "Shadow Integration", "Awakening"]},
+    {"name": "The Tower", "arcana": "Major", "element": "Fire", "symbol": "⚡", "keywords": ["Breakthrough", "Shattered Illusion", "Liberating Truth", "Upheaval"], "reversed_keywords": ["Narrowly Averting", "Fear of Pain", "Delayed Inevitability", "Internal Tremor"]},
+    {"name": "The Star", "arcana": "Major", "element": "Air", "symbol": "⭐", "keywords": ["Renewed Hope", "Spiritual Balm", "Clarity", "Inspiration"], "reversed_keywords": ["Temporary Discouragement", "Cynicism", "Bleak Outlook", "Disconnected Faith"]},
+    {"name": "The Moon", "arcana": "Major", "element": "Water", "symbol": "🌕", "keywords": ["Subconscious Depth", "Intuitive Visions", "Unseen Undercurrents", "Dreamwork"], "reversed_keywords": ["Lifting Fog", "Revealed Deception", "Anxiety Calming", "Clear Sight"]},
+    {"name": "The Sun", "arcana": "Major", "element": "Fire", "symbol": "☀️", "keywords": ["Radiant Joy", "Total Transparency", "Vitality", "Unambiguous Success"], "reversed_keywords": ["Muffled Optimism", "Temporary Burnout", "Delayed Warmth", "Over-extension"]},
+    {"name": "Judgement", "arcana": "Major", "element": "Fire", "symbol": "🪽", "keywords": ["Higher Calling", "Awakening", "Self-reckoning", "Spiritual Absolution"], "reversed_keywords": ["Paralyzing Guilt", "Harsh Self-blame", "Ignoring the Call", "Doubt"]},
+    {"name": "The World", "arcana": "Major", "element": "Earth", "symbol": "🌐", "keywords": ["Wholeness", "Integration", "Culmination", "Arriving Home"], "reversed_keywords": ["Loose Ends", "Unfinished Chapter", "Delayed Closure", "Premature Exit"]},
 
-    # Selected Minor Arcana Anchors (Wands: Fire, Cups: Water, Swords: Air, Pentacles: Earth)
-    {"name": "Ace of Wands", "arcana": "Minor", "suit": "Wands", "element": "Fire", "keywords": ["Creative spark", "Sudden inspiration", "Primal drive", "Initiative"], "reversed_keywords": ["False start", "Creative block", "Depleted enthusiasm", "Delays"]},
-    {"name": "Three of Wands", "arcana": "Minor", "suit": "Wands", "element": "Fire", "keywords": ["Foresight", "Expanding horizon", "Enterprise", "Patience during transit"], "reversed_keywords": ["Obstacles in transit", "Playing small", "Short-sighted plans", "Frustration"]},
-    {"name": "Ten of Wands", "arcana": "Minor", "suit": "Wands", "element": "Fire", "keywords": ["Heavy burdens", "Nearing the finish", "Responsibility overload", "Endurance"], "reversed_keywords": ["Collapse from overwork", "Refusal to delegate", "Dropping unnecessary baggage", "Relief"]},
+    # Selected Minor Arcana
+    {"name": "Ace of Wands", "arcana": "Minor", "element": "Fire", "symbol": "🔥", "keywords": ["Creative Spark", "Primal Drive", "Initiative", "Sudden Inspiration"], "reversed_keywords": ["False Start", "Depleted Energy", "Creative Block", "Hesitation"]},
+    {"name": "Three of Wands", "arcana": "Minor", "element": "Fire", "symbol": "🔭", "keywords": ["Expanding Horizon", "Foresight", "Enterprise", "Patience in Transit"], "reversed_keywords": ["Delays", "Playing Small", "Frustration", "Short-sightedness"]},
+    {"name": "Ten of Wands", "arcana": "Minor", "element": "Fire", "symbol": "🪵", "keywords": ["Heavy Burdens", "Final Stretch", "Responsibility", "Endurance"], "reversed_keywords": ["Overwhelm", "Refusal to Delegate", "Baggage Release", "Breakdown"]},
 
-    {"name": "Ace of Cups", "arcana": "Minor", "suit": "Cups", "element": "Water", "keywords": ["Emotional renewal", "Open heart", "Intuitive flow", "Receptivity"], "reversed_keywords": ["Emotional depletion", "Guardedness", "Repressed feelings", "Wasted empathy"]},
-    {"name": "Five of Cups", "arcana": "Minor", "suit": "Cups", "element": "Water", "keywords": ["Grief", "Mourning lost opportunity", "Spilled emotional energy", "Partial perspective"], "reversed_keywords": ["Acceptance", "Turning to what remains", "Moving past sorrow", "Emotional healing"]},
-    {"name": "Ten of Cups", "arcana": "Minor", "suit": "Cups", "element": "Water", "keywords": ["Emotional fulfillment", "Domestic peace", "Deep alignment", "Wholesome belonging"], "reversed_keywords": ["Fractured harmony", "Unrealistic expectations", "External veneer", "Family friction"]},
+    {"name": "Ace of Cups", "arcana": "Minor", "element": "Water", "symbol": "🌊", "keywords": ["Emotional Renewal", "Open Heart", "Intuitive Inflow", "Pure Receptivity"], "reversed_keywords": ["Emotional Depletion", "Closed Heart", "Repressed Feelings", "Wasted Care"]},
+    {"name": "Five of Cups", "arcana": "Minor", "element": "Water", "symbol": "🍷", "keywords": ["Mourning Loss", "Spilled Emotion", "Grief", "Partial View"], "reversed_keywords": ["Acceptance", "Looking at What Remains", "Forgiveness", "Healing"]},
+    {"name": "Ten of Cups", "arcana": "Minor", "element": "Water", "symbol": "🌈", "keywords": ["Emotional Fulfillment", "Deep Belonging", "Inner Concord", "Peace"], "reversed_keywords": ["Superficial Harmony", "Family Friction", "Unmet Hopes", "Disconnection"]},
 
-    {"name": "Ace of Swords", "arcana": "Minor", "suit": "Swords", "element": "Air", "keywords": ["Mental breakthrough", "Cutting through illusions", "Unyielding truth", "Pure clarity"], "reversed_keywords": ["Mental confusion", "Hostile communication", "Weaponized words", "Clouded judgment"]},
-    {"name": "Three of Swords", "arcana": "Minor", "suit": "Swords", "element": "Air", "keywords": ["Heartbreak", "Piercing clarity", "Sorrowful realization", "Releasing painful truth"], "reversed_keywords": ["Lingering bitterness", "Suppressed hurt", "Beginning recovery", "Forgiveness"]},
-    {"name": "Eight of Swords", "arcana": "Minor", "suit": "Swords", "element": "Air", "keywords": ["Self-imposed cage", "Victim mindset", "Analysis paralysis", "Illusion of entrapment"], "reversed_keywords": ["Finding exit doors", "Reclaiming personal agency", "Shedding limiting beliefs", "Clarity"]},
+    {"name": "Ace of Swords", "arcana": "Minor", "element": "Air", "symbol": "⚔️", "keywords": ["Mental Breakthrough", "Incisive Truth", "Clarity", "Intellectual Focus"], "reversed_keywords": ["Hostile Words", "Mental Fog", "Clouded Decision", "Sharp Retaliation"]},
+    {"name": "Three of Swords", "arcana": "Minor", "element": "Air", "symbol": "💔", "keywords": ["Piercing Realization", "Sorrow", "Truth Cleansing", "Heartbreak"], "reversed_keywords": ["Lingering Bitterness", "Suppressed Pain", "Recovery Beginning", "Forgiveness"]},
+    {"name": "Eight of Swords", "arcana": "Minor", "element": "Air", "symbol": "🪞", "keywords": ["Self-imposed Cage", "Analysis Paralysis", "Limiting Beliefs", "Entrapment"], "reversed_keywords": ["Reclaiming Agency", "Exit Found", "Shedding Limiting Beliefs", "Freedom"]},
 
-    {"name": "Ace of Pentacles", "arcana": "Minor", "suit": "Pentacles", "element": "Earth", "keywords": ["Tangible opportunity", "Grounded seeds", "Material foundation", "Real prosperity"], "reversed_keywords": ["Missed investment", "Unstable footing", "Poor resource management", "Greed"]},
-    {"name": "Four of Pentacles", "arcana": "Minor", "suit": "Pentacles", "element": "Earth", "keywords": ["Security", "Resource protection", "Cautious boundaries", "Financial control"], "reversed_keywords": ["Scarcity mindset", "Stifling rigidity", "Fear of letting go", "Greedy hoarding"]},
-    {"name": "Ten of Pentacles", "arcana": "Minor", "suit": "Pentacles", "element": "Earth", "keywords": ["Legacy", "Long term stability", "Rooted wealth", "Generational foundation"], "reversed_keywords": ["Disputes over resources", "Fragile foundations", "Short term greed", "Loss of structure"]}
+    {"name": "Ace of Pentacles", "arcana": "Minor", "element": "Earth", "symbol": "🌱", "keywords": ["Tangible Seed", "Physical Foundation", "Pragmatic Prosperity", "Opportunity"], "reversed_keywords": ["Missed Opening", "Unstable Soil", "Mismanaged Resources", "Delay"]},
+    {"name": "Four of Pentacles", "arcana": "Minor", "element": "Earth", "symbol": "🪙", "keywords": ["Resource Guarding", "Safe Boundaries", "Financial Control", "Security"], "reversed_keywords": ["Scarcity Fear", "Rigid Possession", "Fear of Flow", "Hoarding"]},
+    {"name": "Ten of Pentacles", "arcana": "Minor", "element": "Earth", "symbol": "🏰", "keywords": ["Enduring Legacy", "Rooted Wealth", "Generational Safety", "Completeness"], "reversed_keywords": ["Family Division", "Fragile Foundation", "Short-sighted Greed", "Loss"]}
 ]
 
 SPREAD_CONFIGS = {
     "Single Card Focus": [
-        {"position": "Present Core", "description": "The dominant active energy and immediate focus point"}
+        {"position": "The Present Core", "description": "The central anchor of your immediate inquiry"}
     ],
-    "Threefold Trinity (Past, Present, Horizon)": [
-        {"position": "Root & Precedent", "description": "Underlying conditions and what brought you to this moment"},
-        {"position": "The Present Crucible", "description": "The active crossroad and reality right in front of you"},
-        {"position": "Unfolding Horizon", "description": "Where energy naturally flows if current patterns stay unchecked"}
+    "Threefold Trinity": [
+        {"position": "Root & Precedent", "description": "Past foundations and underlying history"},
+        {"position": "Active Crucible", "description": "Present forces and dynamic crossroads"},
+        {"position": "Unfolding Horizon", "description": "Where current choices will naturally carry you"}
     ],
-    "Mind, Heart, Spirit Triad": [
-        {"position": "The Mind (Intellect)", "description": "Your conscious thoughts, mental stories, and logic"},
-        {"position": "The Heart (Emotions)", "description": "Your subconscious cravings, genuine feelings, and fears"},
-        {"position": "The Spirit (True Purpose)", "description": "The higher perspective guiding you toward growth"}
+    "Mind, Heart, Spirit": [
+        {"position": "The Conscious Mind", "description": "Logic, plans, mental assumptions, and strategies"},
+        {"position": "The Emotional Heart", "description": "Subconscious fears, desires, and vulnerability"},
+        {"position": "The Higher Spirit", "description": "Soul trajectory, universal alignment, and true self"}
     ],
-    "The Crossroad Decision": [
-        {"position": "The Underlying Tension", "description": "What is truly at stake beneath the surface"},
-        {"position": "Path of Least Resistance", "description": "The automatic, comfortable, or habitual route"},
-        {"position": "Path of Deeper Transformation", "description": "The demanding road that asks for deliberate growth"},
-        {"position": "Integrative Insight", "description": "The catalyst required to reconcile both sides"}
+    "The Crossroad": [
+        {"position": "Core Tension", "description": "What is truly at stake beneath surface questions"},
+        {"position": "The Familiar Route", "description": "Comfortable patterns and the default path"},
+        {"position": "The Demanding Path", "description": "The transformative road calling for conscious bravery"},
+        {"position": "The Catalyst", "description": "The integrative shift needed to make peace with the choice"}
     ]
 }
 
 def analyze_elements(drawn_cards):
-    """Calculates elemental weights across drawn cards to find systemic imbalances."""
-    element_counts = {"Fire": 0, "Water": 0, "Air": 0, "Earth": 0}
+    counts = {"Fire": 0, "Water": 0, "Air": 0, "Earth": 0}
     major_count = 0
     reversed_count = 0
 
     for card in drawn_cards:
-        elem = card["element"]
-        element_counts[elem] = element_counts.get(elem, 0) + 1
+        counts[card["element"]] = counts.get(card["element"], 0) + 1
         if card["arcana"] == "Major":
             major_count += 1
         if card["is_reversed"]:
@@ -163,94 +282,67 @@ def analyze_elements(drawn_cards):
     total = len(drawn_cards)
     insights = []
 
-    # Arcana density check
     if major_count >= (total / 2):
-        insights.append(
-            f"**High Major Arcana Density ({major_count}/{total}):** The forces surrounding this situation are macroscopic and karmic. These are pivotal life lessons rather than transient daily concerns."
-        )
+        insights.append(f"**Dominant Archetypal Shift:** {major_count} of {total} cards belong to the Major Arcana, pointing to macro-level evolution rather than everyday situational friction.")
     else:
-        insights.append(
-            f"**Practical Minor Arcana Weight ({total - major_count}/{total}):** The cards emphasize daily choices, behavioral mechanics, and tactical adjustments under your direct control."
-        )
+        insights.append(f"**Practical Minor Arcana Focus:** {total - major_count} of {total} cards are Minor Arcana, meaning tangible habits, boundaries, and immediate decisions are where your power lives.")
 
-    # Orientation analysis
-    if reversed_count >= (total / 2):
-        insights.append(
-            f"**Inward/Reversed Emphasis ({reversed_count}/{total} reversed):** Much of the energy is internalized, resisted, or asking for quiet unblocking rather than outward action."
-        )
+    dominant_elem = max(counts, key=counts.get)
+    element_descriptions = {
+        "Fire": "Fire dominance brings urgency, raw momentum, passion, and calls for bold creative action.",
+        "Water": "Water dominance points to intuitive currents, relationship dynamics, and unexpressed emotional currents.",
+        "Air": "Air dominance demands intellectual objectivity, honest dialogue, and cutting through mental clutter.",
+        "Earth": "Earth dominance emphasizes material stability, physical pacing, work discipline, and steady foundation building."
+    }
+    insights.append(f"**Primary Element ({dominant_elem}):** {element_descriptions[dominant_elem]}")
 
-    # Dominant or absent elements
-    dominant_elem = max(element_counts, key=element_counts.get)
-    if element_counts[dominant_elem] > 1:
-        elem_meanings = {
-            "Fire": "ambition, momentum, passion, and raw impulse",
-            "Water": "deep feelings, relationships, intuitive sensitivity, and vulnerability",
-            "Air": "analytical thinking, objective truth, mental models, and communication",
-            "Earth": "practical resources, career discipline, physical reality, and foundations"
-        }
-        insights.append(
-            f"**Elemental Predominance ({dominant_elem}):** This spread is heavily saturated with {dominant_elem}, pointing directly to {elem_meanings[dominant_elem]}."
-        )
+    if reversed_count > 0:
+        insights.append(f"**Inward Inversions ({reversed_count} Reversed):** Cards drawn reversed show where energy is being internalized, resisted, or asking for quiet reflection rather than blunt force.")
 
     return insights
 
-def deterministic_reading(question, spread_name, drawn_cards):
-    """Generates a cohesive, non-generic reading using situational logic and cross-card synthesis."""
-    narrative = []
-    narrative.append(f"### The Oracle's Synthesis")
-    if question.strip():
-        narrative.append(f"**Addressing your inquiry:** *\"{question.strip()}\"*\n")
-    else:
-        narrative.append("**Addressing your current energetic landscape:**\n")
-
-    narrative.append(f"Reading configuration: **{spread_name}.\n")
-
-    # Systemic Card Overview
-    narrative.append("#### Positional Breakdown")
-    for card in drawn_cards:
-        orientation = "Reversed" if card["is_reversed"] else "Upright"
-        keywords = card["reversed_keywords"] if card["is_reversed"] else card["keywords"]
-        narrative.append(
-            f"- : ** (*{orientation}*)\n"
-            f"  *Function:* {card['position_desc']}\n"
-            f"  *Core Signatures:* {', '.join(keywords[:3])}\n"
-        )
-
-    # Narrative Synthesis
-    narrative.append("#### The Cohesive Current")
+def deterministic_synthesis(question, spread_name, drawn_cards, element_insights):
+    query_text = f"\"{question.strip()}\"" if question.strip() else "your current life trajectory"
     
-    # Analyze interaction between first and last card
     first = drawn_cards[0]
     last = drawn_cards[-1]
-    
-    first_state = "internalized blockage or caution" if first["is_reversed"] else "direct dynamic force"
-    last_state = "demanding internal renegotiation" if last["is_reversed"] else "clear outward manifestation"
+    first_state = "an internalized, reflective state" if first["is_reversed"] else "a direct, conscious presence"
+    last_state = "demanding internal alignment before resolution" if last["is_reversed"] else "a clear, visible manifestation on the horizon"
 
-    narrative.append(
-        f"Looking at how the energy moves, the foundation set by **{first['name']}** represents a {first_state}. "
-        f"This directly seeds the climate of the spread. Rather than viewing each position in isolation, notice how "
-        f"the middle tension leads inevitably toward **{last['name']}** as an outcome {last_state}."
-    )
-
-    if first["element"] != last["element"]:
-        narrative.append(
-            f"There is an elemental transition at play from **{first['element']}** into **{last['element']}**, "
-            f"showing that your initial instinct must adjust its style of engagement to resolve the core dilemma."
+    breakdown_items = []
+    for c in drawn_cards:
+        orientation = "Reversed" if c["is_reversed"] else "Upright"
+        kws = c["reversed_keywords"] if c["is_reversed"] else c["keywords"]
+        breakdown_items.append(
+            f"<li><strong>{c['position_title']}</strong>: <em>{c['name']}</em> ({orientation})<br/>"
+            f"<span style='color: #94a3b8; font-size: 0.88rem;'>Theme: {', '.join(kws[:3])} &bull; Element: {c['element']}</span></li>"
         )
 
-    narrative.append("\n#### Direct Counsel")
-    if any(c["is_reversed"] for c in drawn_cards):
-        narrative.append(
-            "- **Honor the Inversions:** The reversed cards in your reading show where your natural forward movement is catching on internal friction. Address the subtle hesitation before forcing external progress."
-        )
-    narrative.append(
-        "- **Concrete Action:** Take the lesson of the most grounded card in your spread and translate it into a single, unambiguous step within the next 24 hours."
-    )
+    return f"""
+    <div class="oracle-glass-box">
+        <h3>The Oracle's Synthesis</h3>
+        <p>In response to <strong>{query_text}</strong>, the archetypes have aligned within the <strong>{spread_name}</strong> spread.</p>
+        
+        <h4>Positional Archetypes</h4>
+        <ul style="padding-left: 1.2rem; margin-bottom: 1.2rem;">
+            {''.join(breakdown_items)}
+        </ul>
 
-    return "\n\n".join(narrative)
+        <h4>The Energetic Thread</h4>
+        <p>The spread opens through <strong>{first['name']}</strong> in {first_state}. This establishes the root environment from which the rest of the dynamic unfolds. Notice how this tension seeks its eventual resolution in <strong>{last['name']}</strong>, which operates as {last_state}.</p>
+        
+        <p>Because there is a natural dialogue between <strong>{first['element']}</strong> and <strong>{last['element']}</strong>, the cards counsel that resolving this issue requires moving beyond initial reactions and embracing the quiet discipline of the final card.</p>
 
-def generate_ai_synthesis(api_key, question, spread_name, drawn_cards, element_insights):
-    """Leverages the modern google-genai library to weave deep, personalized interpretations."""
+        <h4>Contemplative Inquiries</h4>
+        <ul>
+            <li>Where are you exerting effort against the grain instead of working with what is naturally unfolding?</li>
+            <li>What truth highlighted by the most grounded card in this spread have you been hesitant to speak aloud?</li>
+            <li>What is one small, deliberate boundary you can honor today to stabilize this energy?</li>
+        </ul>
+    </div>
+    """
+
+def ai_synthesis(api_key, question, spread_name, drawn_cards, element_insights):
     try:
         from google import genai
         from google.genai import types
@@ -262,179 +354,198 @@ def generate_ai_synthesis(api_key, question, spread_name, drawn_cards, element_i
             orientation = "Reversed" if c["is_reversed"] else "Upright"
             kws = c["reversed_keywords"] if c["is_reversed"] else c["keywords"]
             cards_summary.append(
-                f"Position: {c['position_title']} ({c['position_desc']}) | Card: {c['name']} ({orientation}) | Element: {c['element']} | Arcana: {c['arcana']} | Themes: {', '.join(kws)}"
+                f"- Position: {c['position_title']} ({c['position_desc']}) | Card: {c['name']} ({orientation}) | Element: {c['element']} | Keywords: {', '.join(kws)}"
             )
 
         prompt = f"""
-You are an authentic, deeply perceptive Tarot scholar and intuitive reader. 
-Provide a nuanced, non-scripted, highly articulate Tarot reading. Avoid generic platitudes, fortune-telling clichés, or vague cosmic fluff. 
-Speak like an observant mentor reading both the symbolism and the psychological reality of the querent.
+You are a master Tarot reader, depth psychologist, and intuitive mentor.
+Provide a rich, genuine, unscripted Tarot reading for the querent. Avoid fortune-telling gimmicks, generic horoscopes, or superficial platitudes. Speak directly, humanely, and with perceptive insight.
 
-Querent's Question / Area of Focus: "{question if question.strip() else 'General life direction and current crossroads'}"
+Querent Question: "{question.strip() if question.strip() else 'General energetic trajectory and personal evolution'}"
 Spread Used: {spread_name}
 
 Cards Drawn:
 {chr(10).join(cards_summary)}
 
-Systemic Elemental Analysis:
+Systemic Elemental Balance:
 {chr(10).join(element_insights)}
 
-Guidelines for the response:
-1. Address the querent's question directly with empathy, psychological depth, and tactical clarity.
-2. Weave the cards together into an interconnected story showing how one card directly influences, complicates, or resolves the next.
-3. Highlight what the reversed cards and elemental tensions reveal about subconscious patterns.
-4. Conclude with three sharp, practical reflective questions the querent can take into their week.
-5. Do not use em dashes anywhere in your text.
+Guidelines:
+1. Speak directly to the querent's question with grounded empathy and sharp psychological clarity.
+2. Weave the cards together into a seamless narrative current rather than disconnected card by card summaries.
+3. Explicitly explain what the reversed cards or dominant elements reveal about unexpressed subconscious currents.
+4. Conclude with three sharp, introspective reflection questions tailored to this spread.
+5. Format cleanly using HTML tags like <h4>, <p>, <ul>, <li> inside the response.
+6. Do not use em dashes anywhere in your response.
 """
         response = client.models.generate_content(
             model="gemini-2.5-flash",
             contents=prompt,
             config=types.GenerateContentConfig(
                 temperature=0.7,
-                max_output_tokens=1000
+                max_output_tokens=1100
             )
         )
-        return response.text
+        return f'<div class="oracle-glass-box"><h3>The Oracle\'s Deep Synthesis</h3>{response.text}</div>'
     except Exception as e:
-        st.warning(f"Unable to complete AI synthesis ({str(e)}). Falling back to the deterministic engine.")
-        return deterministic_reading(question, spread_name, drawn_cards)
+        st.warning(f"AI synthesis unavailable ({str(e)}). Switching to the native deterministic engine.")
+        return deterministic_synthesis(question, spread_name, drawn_cards, element_insights)
 
-# Sidebar: Controls & Options
-with st.sidebar:
-    st.title("Settings")
-    st.markdown("Customize your draw and reading engine.")
+# --- Hero Section (Mirroring Layout 1) ---
+st.markdown(
+    """
+    <div class="hero-container">
+        <div class="hero-badge">✦ Archetypal Oracle & Insight Engine ✦</div>
+        <div class="hero-title">Arcana Insight</div>
+        <div class="hero-subtitle">
+            Authentic, unscripted Tarot readings mapping the dialogue between ancient symbolism, elemental physics, and your genuine questions.
+        </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
-    spread_choice = st.selectbox(
-        "Choose Spread Type",
-        options=list(SPREAD_CONFIGS.keys()),
-        index=1
-    )
+# --- Spread Selector & Control Bar ---
+with st.container():
+    st.markdown('<div class="input-bar-wrap">', unsafe_allow_html=True)
+    c1, c2, c3 = st.columns([3, 2, 1])
 
-    allow_reversals = st.checkbox("Allow Reversed Cards", value=True, help="Simulates genuine physical deck randomization where cards can land upside down.")
+    with c1:
+        user_query = st.text_input(
+            "What question or crossroads is alive in your world right now?",
+            placeholder="e.g., How can I navigate the tension between security and creative freedom?",
+            key="user_query_input"
+        )
+    with c2:
+        spread_type = st.selectbox(
+            "Select Spread Structure",
+            options=list(SPREAD_CONFIGS.keys()),
+            index=1,
+            key="spread_select"
+        )
+    with c3:
+        st.write("")
+        st.write("")
+        draw_button = st.button("Cast Spread ✦", use_container_width=True)
 
-    st.markdown("---")
-    st.subheader("Deep Synthesis Engine")
-    st.markdown("You can run readings entirely offline, or connect your Gemini API key for tailored conversational analysis.")
-    api_key_input = st.text_input("Gemini API Key (Optional)", type="password", value=os.environ.get("GEMINI_API_KEY", ""))
+    c_opt1, c_opt2 = st.columns([1, 2])
+    with c_opt1:
+        allow_reversals = st.checkbox("Allow Inversions (Reversed Cards)", value=True)
+    with c_opt2:
+        api_key_input = st.text_input(
+            "Optional: Gemini API Key for conversational synthesis",
+            type="password",
+            value=os.environ.get("GEMINI_API_KEY", ""),
+            placeholder="Paste your key or leave blank for the built-in symbolic engine"
+        )
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("---")
-    st.caption("Arcana Insight balances classical Tarot archetypes, elemental alchemy, and psychological inquiry.")
+# Maintain state
+if "reading_data" not in st.session_state:
+    st.session_state.reading_data = None
 
-# Main Interface
-st.title("Arcana Insight")
-st.markdown("A purposeful, non-scripted Tarot engine that treats cards as living archetypes interacting with your specific reality.")
-
-col1, col2 = st.columns([3, 1])
-with col1:
-    user_query = st.text_input(
-        "What inquiry, dilemma, or decision do you bring to the cards?",
-        placeholder="e.g., Should I pivot my career toward independent consulting this quarter?"
-    )
-with col2:
-    st.write("")
-    st.write("")
-    draw_button = st.button("Draw the Cards", use_container_width=True)
-
-# Session State for Readings
-if "current_reading" not in st.session_state:
-    st.session_state.current_reading = None
-
+# Draw Handler
 if draw_button:
-    selected_spread = SPREAD_CONFIGS[spread_choice]
-    num_cards = len(selected_spread)
+    spread_info = SPREAD_CONFIGS[spread_type]
+    sampled = random.sample(TAROT_DECK, len(spread_info))
+    cards_payload = []
 
-    # True random sampling without replacement from the deck
-    sampled_indices = random.sample(range(len(TAROT_DECK)), num_cards)
-    drawn = []
+    for idx, pos in enumerate(spread_info):
+        card = dict(sampled[idx])
+        card["position_title"] = pos["position"]
+        card["position_desc"] = pos["description"]
+        card["is_reversed"] = random.choice([True, False]) if allow_reversals else False
+        cards_payload.append(card)
 
-    for i, idx in enumerate(sampled_indices):
-        card_data = dict(TAROT_DECK[idx])
-        card_data["position_title"] = selected_spread[i]["position"]
-        card_data["position_desc"] = selected_spread[i]["description"]
-        card_data["is_reversed"] = random.choice([True, False]) if allow_reversals else False
-        drawn.append(card_data)
-
-    st.session_state.current_reading = {
+    st.session_state.reading_data = {
         "question": user_query,
-        "spread_name": spread_choice,
-        "cards": drawn
+        "spread_name": spread_type,
+        "cards": cards_payload
     }
 
-# Display Active Reading
-if st.session_state.current_reading:
-    reading = st.session_state.current_reading
-    cards = reading["cards"]
+# --- Active Card Display Section ---
+if st.session_state.reading_data:
+    rd = st.session_state.reading_data
+    cards = rd["cards"]
+    num_cards = len(cards)
 
-    st.markdown("---")
-    st.subheader(f"Drawn Spread: {reading['spread_name']}")
+    st.markdown(
+        f"""
+        <div style="text-align: center; margin: 1.8rem 0 1.2rem 0;">
+            <span style="font-family: 'Cinzel', serif; font-size: 1.3rem; color: #e9d5ff; font-weight: 600;">
+                Reading: {rd['spread_name']}
+            </span>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    # Render Card Grid
-    cols = st.columns(len(cards))
+    # Render cards in matching columns
+    card_cols = st.columns(num_cards)
     for idx, card in enumerate(cards):
-        with cols[idx]:
+        with card_cols[idx]:
             is_rev = card["is_reversed"]
-            orient_label = "Reversed" if is_rev else "Upright"
-            orient_class = "orientation-reversed" if is_rev else "orientation-upright"
+            status_text = "Reversed" if is_rev else "Upright"
+            status_cls = "status-reversed" if is_rev else "status-upright"
             kws = card["reversed_keywords"] if is_rev else card["keywords"]
 
+            # Visual representation with card art frame
             st.markdown(
                 f"""
-                <div class="tarot-card">
-                    <div style="font-size: 0.8rem; color: #a5b4fc; margin-bottom: 0.2rem;">
-                        {card['position_title']}
-                    </div>
-                    <div class="card-title">{card['name']}</div>
-                    <div class="card-orientation {orient_class}">{orient_label}</div>
-                    <div class="element-tag">{card['element']} | {card['arcana']}</div>
-                    <div style="margin-top: 0.9rem; font-size: 0.85rem; color: #cbd5e1; line-height: 1.4;">
-                        <strong>Energy:</strong> {card['position_desc']}
-                    </div>
-                    <div style="margin-top: 0.6rem; font-size: 0.8rem; color: #94a3b8;">
-                        <strong>Signatures:</strong> {', '.join(kws[:3])}
+                <div class="card-slot-wrap">
+                    <div class="card-slot-tag">{card['position_title']}</div>
+                    <div class="mystic-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span class="status-pill {status_cls}">{status_text}</span>
+                            <span style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">{card['element']}</span>
+                        </div>
+                        <div class="card-glyph-container">
+                            <div class="card-symbol">{card['symbol']}</div>
+                            <div class="card-name-title">{card['name']}</div>
+                            <div style="font-size: 0.72rem; color: #a855f7; margin-top: 0.2rem;">{card['arcana']} Arcana</div>
+                        </div>
+                        <div style="font-size: 0.76rem; color: #cbd5e1; line-height: 1.35;">
+                            <strong style="color: #e2e8f0;">Core Essence:</strong> {', '.join(kws[:3])}
+                        </div>
                     </div>
                 </div>
                 """,
-                unsafe_allow_html=True
+                unsafe_allow_html=True,
             )
 
-    # Run Elemental and Structural Pattern Diagnosis
-    st.markdown("### Energetic & Elemental Blueprint")
+    # Systemic Energetic Blueprint
+    st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
+    st.markdown("#### Systemic Archetypal Blueprint")
     element_insights = analyze_elements(cards)
     for insight in element_insights:
         st.markdown(f"- {insight}")
 
-    # Generate Synthesized Reading
-    st.markdown("---")
-    with st.spinner("Synthesizing archetypes and cross-currents..."):
+    # Narrative Output (AI or Deterministic)
+    with st.spinner("Channeling archetypes and weaving narrative..."):
         if api_key_input.strip():
-            reading_text = generate_ai_synthesis(
+            rendered_html = ai_synthesis(
                 api_key_input.strip(),
-                reading["question"],
-                reading["spread_name"],
+                rd["question"],
+                rd["spread_name"],
                 cards,
                 element_insights
             )
         else:
-            reading_text = deterministic_reading(
-                reading["question"],
-                reading["spread_name"],
-                cards
+            rendered_html = deterministic_synthesis(
+                rd["question"],
+                rd["spread_name"],
+                cards,
+                element_insights
             )
 
-    st.markdown(
-        f"""
-        <div class="reading-summary-box">
-            {reading_text}
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    st.markdown(rendered_html, unsafe_allow_html=True)
 
-    # Contemplation & Journaling Prompt
-    st.markdown("---")
-    st.markdown("#### Querent's Sacred Reflection")
+    # Journal / Contemplation area
+    st.markdown("<div style='margin-top: 2rem;'></div>", unsafe_allow_html=True)
+    st.subheader("Personal Journal & Intuitive Sparks")
     st.text_area(
-        "Record your personal gut reaction, intuitive sparks, or action steps here:",
+        "Capture what resonated most deeply with your intuition:",
         placeholder="What did this spread illuminate that your conscious mind was trying to overlook?",
-        height=120
+        height=120,
+        key="journal_notes"
     )
